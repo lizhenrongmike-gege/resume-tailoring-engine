@@ -1,0 +1,1 @@
+# JobScan — Daily Job Scanner

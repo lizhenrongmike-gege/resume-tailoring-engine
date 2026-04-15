@@ -1,0 +1,262 @@
+# Role Archetypes — Gap-Closer Reference
+# Used in role-type mode to synthesize typical requirements for common roles.
+# Each archetype reflects current market expectations (2025-2026).
+# Agent: if the user's target role is not listed here, synthesize requirements
+# from training knowledge and note that archetypes/references were not used.
+
+archetypes:
+
+  # ── 1. Agentic AI / LLM Engineer ──────────────────────────────────────────
+  - id: agentic_ai_engineer
+    title: "Agentic AI Engineer"
+    also_known_as:
+      - "AI Agent Developer"
+      - "LLM Engineer"
+      - "Applied AI Engineer"
+      - "AI Automation Engineer"
+    experience_level: "1-4 years"
+    domain_context: >
+      Builds autonomous AI systems that can reason, plan, and execute multi-step tasks
+      with minimal human intervention. Focuses on reliability, tool use, and production
+      deployment of agent pipelines.
+    requirements:
+      hard_req:
+        - Python
+        - LLM APIs (OpenAI, Gemini, Anthropic)
+        - prompt engineering
+        - agent frameworks (LangChain, AutoGen, Google ADK, CrewAI)
+        - tool use / function calling
+        - REST APIs
+      critical:
+        - multi-agent orchestration
+        - RAG (Retrieval-Augmented Generation)
+        - vector databases (Pinecone, Weaviate, pgvector)
+        - evaluation and testing of LLM outputs
+        - production deployment
+        - async / concurrent processing
+        - MCP (Model Context Protocol)
+      preferred:
+        - fine-tuning
+        - observability / tracing (LangSmith, Helicone)
+        - streaming responses
+        - Docker / containerization
+        - TypeScript / JavaScript
+      cultural:
+        - open-source contributions to AI/agent frameworks
+        - technical blog posts or demo videos of agent projects
+        - active on AI community platforms (HuggingFace, Discord, Twitter/X)
+        - GitHub with public agent projects
+
+  # ── 2. Data Analyst ───────────────────────────────────────────────────────
+  - id: data_analyst
+    title: "Data Analyst"
+    also_known_as:
+      - "Business Intelligence Analyst"
+      - "Analytics Analyst"
+      - "Reporting Analyst"
+    experience_level: "0-3 years"
+    domain_context: >
+      Translates raw data into business insights through SQL queries, dashboards,
+      and statistical analysis. Bridges between data engineering and business stakeholders.
+    requirements:
+      hard_req:
+        - SQL
+        - Excel
+        - data visualization (Tableau, Power BI, Looker)
+        - business acumen
+        - stakeholder communication
+      critical:
+        - Python (pandas, numpy)
+        - A/B testing and experimentation
+        - data cleaning and ETL
+        - dashboard design
+        - KPI definition and tracking
+      preferred:
+        - dbt
+        - Snowflake / BigQuery / Redshift
+        - statistical modeling
+        - cohort analysis
+        - funnel analysis
+      cultural:
+        - data storytelling examples (portfolio dashboards)
+        - blog posts about data findings or methodology
+        - Kaggle competitions or public datasets analysis
+
+  # ── 3. Operations Analyst ─────────────────────────────────────────────────
+  - id: operations_analyst
+    title: "Operations Analyst"
+    also_known_as:
+      - "Revenue Operations Analyst"
+      - "Business Operations Analyst"
+      - "Strategy & Operations Analyst"
+      - "GTM Operations Analyst"
+    experience_level: "0-3 years"
+    domain_context: >
+      Improves business processes and operational efficiency through data analysis,
+      workflow design, and cross-functional collaboration. Often works at the intersection
+      of sales, marketing, finance, and product.
+    requirements:
+      hard_req:
+        - Excel (advanced: pivot tables, XLOOKUP, modeling)
+        - SQL
+        - process documentation
+        - cross-functional communication
+        - CRM tools (Salesforce, HubSpot)
+      critical:
+        - data analysis and reporting
+        - root cause analysis
+        - project management
+        - dashboard creation (Tableau, Looker, Google Sheets)
+        - KPI tracking and OKR alignment
+      preferred:
+        - Python for automation
+        - Zapier or workflow automation tools
+        - financial modeling
+        - Jira / Asana / Notion
+        - GTM tooling (Apollo, Outreach, Gong)
+      cultural:
+        - examples of process improvements with measurable outcomes
+        - documentation and SOPs
+        - cross-team collaboration stories
+
+  # ── 4. AI Product / Solutions Engineer ────────────────────────────────────
+  - id: ai_solutions_engineer
+    title: "AI Solutions Engineer"
+    also_known_as:
+      - "AI Solutions Architect"
+      - "AI Implementation Specialist"
+      - "Technical Account Manager (AI)"
+    experience_level: "1-4 years"
+    domain_context: >
+      Bridges product and engineering — works with customers to implement and
+      customize AI products, often writing integration code and guiding technical adoption.
+    requirements:
+      hard_req:
+        - Python
+        - REST API integration
+        - customer-facing technical communication
+        - LLM product familiarity
+        - SQL
+      critical:
+        - demo and proof-of-concept development
+        - API documentation reading and implementation
+        - troubleshooting and debugging
+        - CRM and ticketing systems
+        - integration patterns (webhooks, OAuth2, batch processing)
+      preferred:
+        - JavaScript / Node.js
+        - cloud platforms (AWS, GCP, Azure)
+        - Salesforce or enterprise software
+        - technical writing
+        - prompt engineering
+      cultural:
+        - demo videos or walkthroughs of AI products
+        - technical blog posts or tutorials
+        - public projects showing API integrations
+
+  # ── 5. Risk / Compliance Analyst ──────────────────────────────────────────
+  - id: risk_analyst
+    title: "Risk & Compliance Analyst"
+    also_known_as:
+      - "Fraud Analyst"
+      - "Trust and Safety Analyst"
+      - "KYC Analyst"
+      - "Credit Risk Analyst"
+    experience_level: "0-3 years"
+    domain_context: >
+      Identifies, investigates, and mitigates financial, operational, or compliance
+      risk. Combines data analysis with regulatory knowledge and investigative judgment.
+    requirements:
+      hard_req:
+        - SQL
+        - Excel
+        - KYC / AML fundamentals
+        - data analysis
+        - attention to detail
+      critical:
+        - fraud pattern detection
+        - case management and escalation
+        - sanctions screening
+        - root cause analysis
+        - cross-functional reporting
+      preferred:
+        - Python for analysis automation
+        - Tableau or BI tools
+        - link analysis / graph-based fraud detection
+        - regulatory knowledge (BSA, OFAC, GDPR)
+        - Salesforce or CRM
+      cultural:
+        - process improvement documentation
+        - demonstrated judgment in ambiguous situations
+        - cross-team collaboration on policy
+
+  # ── 6. ML / Data Scientist ────────────────────────────────────────────────
+  - id: ml_data_scientist
+    title: "Machine Learning Engineer / Data Scientist"
+    also_known_as:
+      - "Applied ML Engineer"
+      - "Research Scientist"
+      - "AI/ML Analyst"
+    experience_level: "1-4 years"
+    domain_context: >
+      Develops and deploys predictive models and ML systems. Spans model development,
+      feature engineering, evaluation, and production deployment.
+    requirements:
+      hard_req:
+        - Python (scikit-learn, PyTorch or TensorFlow)
+        - SQL
+        - statistical modeling
+        - feature engineering
+        - model evaluation metrics
+      critical:
+        - experiment tracking (MLflow, W&B)
+        - data pipelines and ETL
+        - cross-validation and holdout methodology
+        - model deployment (REST API, batch inference)
+        - version control (Git)
+      preferred:
+        - distributed computing (Spark, Dask)
+        - cloud ML platforms (SageMaker, Vertex AI, Azure ML)
+        - Docker / containerization
+        - A/B testing
+        - NLP or computer vision
+      cultural:
+        - Kaggle competitions with top rankings
+        - open-source ML library contributions
+        - research paper reading or replication projects
+        - GitHub with ML projects and notebooks
+
+  # ── 7. Product Analyst / Growth Analyst ───────────────────────────────────
+  - id: product_analyst
+    title: "Product Analyst / Growth Analyst"
+    also_known_as:
+      - "Growth Analyst"
+      - "Product Data Analyst"
+      - "User Insights Analyst"
+    experience_level: "0-3 years"
+    domain_context: >
+      Uses behavioral data and experimentation to understand users and improve product
+      metrics. Works closely with PMs and engineers on feature decisions and growth loops.
+    requirements:
+      hard_req:
+        - SQL
+        - product analytics tools (Mixpanel, Amplitude, Heap)
+        - A/B testing and statistical significance
+        - funnel analysis
+        - cohort and retention analysis
+      critical:
+        - Python or R for advanced analysis
+        - data visualization (Tableau, Looker)
+        - user behavior modeling
+        - KPI definition and instrumentation
+        - cross-functional communication with PMs and engineers
+      preferred:
+        - event tracking implementation (Segment, Rudderstack)
+        - LTV and churn modeling
+        - growth frameworks (AARRR, HEART)
+        - causal inference
+        - Databricks or warehouse SQL
+      cultural:
+        - product intuition and user empathy stories
+        - examples of data-driven product decisions
+        - portfolio of analysis write-ups

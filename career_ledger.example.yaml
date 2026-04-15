@@ -1,0 +1,86 @@
+# Career Ledger — Example (Fictional Data)
+# This file demonstrates the atomic achievement schema used by the pipeline.
+# Replace with your own career data to use the system.
+# See references/initialization.md for the full schema documentation.
+
+work_experience:
+  - role: "Machine Learning Engineer"
+    company: "Acme Analytics"
+    location: "San Francisco, CA"
+    dates: "03/2024 - Present"
+    tools_confirmed: [Python, PyTorch, AWS SageMaker, Docker, SQL]
+    plausibility_ceiling: "Mid-level ML engineer on a recommendation team. Can claim model development, deployment, and A/B testing. Cannot claim team leadership or platform architecture ownership."
+    achievements:
+      - id: acme_1
+        action: "Designed and deployed a real-time product recommendation model using PyTorch and AWS SageMaker, serving 2M+ daily predictions across the e-commerce platform."
+        metric: "2M+ daily predictions"
+        metric_type: scale
+        method: "PyTorch, AWS SageMaker, real-time inference, feature engineering"
+        outcome: "Model served 2M+ predictions/day with <50ms p99 latency."
+        reframe_ceiling: "Can claim model design and deployment. Cannot claim platform architecture."
+        keywords_natural: [PyTorch, SageMaker, recommendation, real-time, inference, ML, deployment]
+      - id: acme_2
+        action: "Built an automated A/B testing pipeline that reduced experiment cycle time from 2 weeks to 3 days, enabling the team to run 4x more experiments per quarter."
+        metric: "2 weeks to 3 days, 4x"
+        metric_type: percentage
+        method: "Python, statistical testing, CI/CD, experiment orchestration"
+        outcome: "4x increase in experiment throughput per quarter."
+        reframe_ceiling: "Can claim building the pipeline. Cannot claim all experiment results."
+        keywords_natural: [A/B testing, experimentation, CI/CD, pipeline, statistical testing]
+
+  - role: "Data Analyst"
+    company: "GlobalTech Solutions"
+    location: "Austin, TX"
+    dates: "06/2022 - 02/2024"
+    tools_confirmed: [SQL, Python, Tableau, Excel, dbt]
+    plausibility_ceiling: "Junior-to-mid data analyst supporting marketing and operations teams. Can claim dashboard development, analysis, and process improvements. Cannot claim strategic decision-making."
+    achievements:
+      - id: global_1
+        action: "Developed a customer segmentation model using k-means clustering on 500K+ records, enabling targeted marketing campaigns that improved conversion rates by 18%."
+        metric: "500K+, 18%"
+        metric_type: percentage
+        method: "Python, k-means clustering, SQL, customer analytics"
+        outcome: "18% conversion rate improvement from targeted campaigns."
+        reframe_ceiling: "Can claim the analysis and model. Marketing team executed the campaigns."
+        keywords_natural: [segmentation, clustering, SQL, Python, marketing analytics, conversion]
+      - id: global_2
+        action: "Automated weekly executive reporting by building a Tableau dashboard suite connected to dbt-transformed warehouse data, eliminating 8 hours/week of manual Excel work."
+        metric: "8 hours/week"
+        metric_type: scale
+        method: "Tableau, dbt, SQL, data warehouse, ETL"
+        outcome: "Eliminated 8 hours/week of manual reporting."
+        reframe_ceiling: "Can claim building the dashboards and dbt models. Cannot claim data warehouse design."
+        keywords_natural: [Tableau, dbt, dashboard, ETL, data warehouse, reporting, automation]
+
+independent_projects:
+  - title: "Predictive Maintenance System"
+    dates: "2024"
+    tools_confirmed: [Python, scikit-learn, FastAPI, Docker]
+    achievements:
+      - id: pred_1
+        action: "Built an end-to-end predictive maintenance pipeline using scikit-learn, processing 1M+ sensor readings to predict equipment failures 48 hours in advance with 92% recall."
+        metric: "1M+, 48 hours, 92%"
+        metric_type: percentage
+        method: "scikit-learn, time-series features, FastAPI, Docker"
+        outcome: "92% recall on failure prediction, 48-hour advance warning."
+        reframe_ceiling: "Personal project — can claim full ownership."
+        keywords_natural: [predictive maintenance, scikit-learn, time-series, FastAPI, Docker, ML pipeline]
+
+education:
+  - institution: "State University"
+    degree: "BS Computer Science, Minor in Statistics"
+    gpa: "3.7"
+    graduation: "May 2022"
+
+skills_confirmed:
+  - Python
+  - SQL
+  - PyTorch
+  - scikit-learn
+  - AWS SageMaker
+  - Docker
+  - Tableau
+  - dbt
+  - Excel
+  - FastAPI
+  - Git

@@ -1,0 +1,31 @@
+# Pre-indexed strengths per lane, derived from career_ledger.yaml.
+# Each lane lists strongest evidence + keywords the candidate can prove.
+# Update when career_ledger.yaml changes.
+#
+# This file ships as a TEMPLATE. The shape is a dict of "lanes" — each lane is
+# a role archetype you'd consider (e.g. risk/fraud, data/ops, AI engineer,
+# GTM). Populate strongest_match + supporting evidence + provable keywords
+# based on your own career_ledger.yaml. Your real copy can live in
+# `profile_evidence.local.yaml` (gitignored).
+
+lane_1_example_archetype:
+  strongest_match:
+    - role: "<Company — Title (duration)>"
+      evidence:
+        - "<Specific, quantified accomplishment>"
+        - "<Another concrete outcome>"
+      keywords_i_can_prove:
+        - "<keyword from JDs in this lane>"
+        - "<another keyword>"
+  supporting:
+    - role: "<Adjacent role that reinforces the lane>"
+      evidence:
+        - "<What transfers>"
+
+lane_2_another_archetype:
+  strongest_match:
+    - role: "<Company — Title>"
+      evidence:
+        - "<Accomplishment>"
+  keywords_i_can_prove:
+    - "<keyword>"

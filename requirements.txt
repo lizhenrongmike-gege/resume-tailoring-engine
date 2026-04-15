@@ -1,0 +1,40 @@
+# Resume Tailor skill preflight dependencies
+#
+# This file is a dependency manifest for the whole skill, not a pip-only lockfile.
+# Most requirements are system tools or Node packages, so do not expect
+# `pip install -r requirements.txt` to fully provision the environment.
+#
+# Install before running this skill in a coding agent.
+
+[system]
+pandoc
+python3
+node
+libreoffice
+pdfinfo
+
+[node-packages]
+docx
+
+[macos-install]
+brew install pandoc node poppler
+brew install --cask libreoffice
+npm install
+
+[linux-debian-install]
+sudo apt update
+sudo apt install -y pandoc nodejs npm libreoffice poppler-utils
+npm install
+
+[verify]
+pandoc --version
+python3 --version
+node --version
+node -e "require('docx'); console.log('node packages OK')"
+libreoffice --version
+pdfinfo -v
+
+[notes]
+- `pdfinfo` is provided by `poppler` on macOS and `poppler-utils` on Debian/Ubuntu.
+- `docx` is installed locally through `package.json` / `package-lock.json`.
+- If `libreoffice` is unavailable, the skill can still generate `.docx`, but one-page PDF verification becomes harder.

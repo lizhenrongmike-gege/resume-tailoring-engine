@@ -1,0 +1,36 @@
+# Structured identity card for LLM matching. Update when situation changes.
+#
+# This file ships as a TEMPLATE. Replace the placeholder values with your own
+# before running the scanner — the ranker reads this to decide which jobs fit
+# you. Your real, personal copy should live in `profile_facts.local.yaml`
+# (gitignored) or simply in this file (git will show it dirty; do not commit).
+
+name: "<Your Name>"
+
+education:
+  school: "<University>"
+  degree: "<Degree, Major/Minor>"
+  graduation: "YYYY-MM"
+  gpa: "X.X/4.0"
+  no_cs_degree: false
+  relevant_coursework:
+    - "<Course 1>"
+    - "<Course 2>"
+
+constraints:
+  max_yoe_required: 3          # skip JDs requiring more years of experience
+  cannot_pass: []              # e.g. [leetcode, system_design_interview]
+  needs: null                  # e.g. h1b_sponsorship, or null
+  location: ["<City, ST>", "remote US"]
+
+confirmed_tools:
+  languages: []
+  bi_analytics: []
+  ai_ml: []
+  integrations: []
+  automation: []
+  data: []
+
+strengths:
+  - "<One-line strength with concrete evidence>"
+  - "<Another strength — keep to 4–6 total>"

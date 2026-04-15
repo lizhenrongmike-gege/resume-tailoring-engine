@@ -1,0 +1,372 @@
+# ──────────────────────────────────────────────────────────────
+#  Resume Grading Rubric  v1.0
+#  Machine-readable rubric for evaluating AI-generated resumes.
+#  Consumed by:
+#    - Python grading script  (scorer: script / both)
+#    - AI agent via GRADE.md  (scorer: agent  / both)
+# ──────────────────────────────────────────────────────────────
+
+rubric_version: "1.0"
+source: "Resume Best Practices Rulebook (NotebookLM synthesis) + SKILL.md v5 constraints"
+total_weight: 100
+score_scale: "0-100 per dimension, weighted average for overall"
+
+dimensions:
+  # ── 1. ATS Compliance ──────────────────────────────────────
+  - id: ats_compliance
+    name: ATS Compliance
+    weight: 10
+    scorer: script
+    description: >
+      Ensures the resume can be parsed by Applicant Tracking Systems
+      without layout or element errors.
+    checks:
+      - id: single_column
+        description: Resume uses single-column layout, no tables/textboxes/graphics
+        type: structural
+
+      - id: no_headers_footers
+        description: No content in document headers/footers (all contact info in body)
+        type: structural
+
+      - id: file_format
+        description: Output is .docx or text-based PDF
+        type: formatting
+
+      - id: no_prohibited_elements
+        description: No icons, emojis, skill-rating bars, or images
+        type: formatting
+
+    scoring_guide: >
+      Binary per check (pass = 25 pts each). Score = (passed_checks / 4) * 100.
+
+  # ── 2. One-Page Fit ────────────────────────────────────────
+  - id: one_page_fit
+    name: One-Page Fit
+    weight: 10
+    scorer: script
+    description: >
+      Validates the resume fits on exactly one page with appropriate content
+      density — neither overflowing nor looking sparse.
+    checks:
+      - id: exactly_one_page
+        description: Resume fits on exactly one page
+        type: structural
+        target: 1
+
+      - id: page_fill_estimate
+        description: estimatePageFill verdict is "OK" (not OVER or UNDER)
+        type: structural
+
+    scoring_guide: >
+      exactly_one_page is worth 60 pts (pass/fail). page_fill_estimate is
+      worth 40 pts (pass/fail). Score = sum of earned points.
+
+  # ── 3. XYZ Formula ─────────────────────────────────────────
+  - id: xyz_formula
+    name: XYZ Formula
+    weight: 15
+    scorer: agent
+    description: >
+      Each bullet should follow the [X accomplished] [Y measured by]
+      [Z via method] pattern to demonstrate impact-driven storytelling.
+    checks:
+      - id: xyz_structure
+        description: >
+          Each bullet follows [X accomplished] [Y measured by] [Z via method]
+          pattern
+        type: content
+
+      - id: business_alignment
+        description: >
+          Achievements translate to revenue, cost reduction, or efficiency
+        type: content
+
+      - id: no_task_descriptions
+        description: >
+          No passive "responsible for" / "handled" / "assisted with" framing
+        type: content
+
+    scoring_guide: >
+      Agent rates each bullet 0-3 (0 = task description, 1 = action only,
+      2 = action + one of Y/Z, 3 = full XYZ). Dimension score =
+      (sum of bullet scores / (3 * total_bullets)) * 100, with a -10
+      penalty per bullet that uses passive framing.
+
+  # ── 4. Action Verb Quality ─────────────────────────────────
+  - id: action_verb_quality
+    name: Action Verb Quality
+    weight: 10
+    scorer: script
+    description: >
+      Every bullet must open with an approved past-tense power verb;
+      banned weak verbs are prohibited, and verb variety is required.
+    checks:
+      - id: approved_verb_start
+        description: Every bullet starts with a past-tense power verb from the approved lexicon
+        type: content
+
+      - id: banned_verbs
+        description: >
+          None of: Responsible for, Assisted with, Helped, Participated,
+          Handled, Maintained, Utilized, Supported, Worked on, Contributed to
+        type: content
+
+      - id: verb_variety
+        description: No single verb used 3+ times across all bullets
+        type: content
+        max: 2
+
+    approved_verb_lexicon:
+      Executive:
+        - Architected
+        - Spearheaded
+        - Orchestrated
+        - Piloted
+        - Helmed
+      Technical:
+        - Engineered
+        - Automated
+        - Deployed
+        - Formulated
+        - Optimized
+      Financial:
+        - Generated
+        - Accelerated
+        - Delivered
+        - Negotiated
+        - Maximized
+      Process:
+        - Streamlined
+        - Reduced
+        - Transformed
+        - Reengineered
+        - Standardized
+      Common:
+        - Built
+        - Designed
+        - Developed
+        - Led
+        - Drove
+        - Implemented
+        - Created
+        - Launched
+        - Integrated
+        - Shipped
+        - Managed
+        - Conducted
+        - Proposed
+        - Owned
+        - Maintained    # acceptable only as first verb describing active ownership
+
+    scoring_guide: >
+      approved_verb_start: 40 pts * (compliant_bullets / total_bullets).
+      banned_verbs: 30 pts if zero violations, else 0.
+      verb_variety: 30 pts if no verb exceeds max usage, else 0.
+      Score = sum of the three components.
+
+  # ── 5. Metric Density ──────────────────────────────────────
+  - id: metric_density
+    name: Metric Density
+    weight: 15
+    scorer: both
+    description: >
+      At least 70% of bullets must contain numerical data, with metrics
+      front-loaded and diversified across types.
+    checks:
+      - id: overall_70_percent
+        description: At least 70% of bullets contain numerical data
+        type: content
+        min: 0.70
+
+      - id: first_bullet_quantified
+        description: First bullet under every role/project contains a quantified result
+        type: content
+
+      - id: metric_front_loading
+        description: Metrics appear early in the bullet (first 8-10 words preferred)
+        type: content
+        target: 10    # word position target
+
+      - id: metric_type_diversity
+        description: >
+          Mix of percentage, dollar, scale, count metrics across resume
+        type: content
+        min: 3        # at least 3 distinct metric types
+
+      - id: no_fabrication
+        description: >
+          All metrics must be traceable to career_ledger.yaml achievements
+          (agent check)
+        type: content
+
+    scoring_guide: >
+      Script: overall_70_percent (30 pts, proportional),
+      first_bullet_quantified (20 pts, pass/fail per role then averaged),
+      metric_front_loading (15 pts, proportional to bullets meeting target),
+      metric_type_diversity (10 pts, min 3 types = full marks).
+      Agent: no_fabrication (25 pts, deduct per unverifiable metric).
+      Score = sum of all components.
+
+  # ── 6. Keyword Coverage ────────────────────────────────────
+  - id: keyword_coverage
+    name: Keyword Coverage
+    weight: 15
+    scorer: script
+    description: >
+      Validates that 25-35 relevant keywords from the job description are
+      placed in the resume at a healthy density.
+    checks:
+      - id: keyword_count_range
+        description: 25-35 relevant keywords placed from JD
+        type: keyword
+        min: 25
+        max: 35
+
+      - id: hard_req_coverage
+        description: Every hard-requirement keyword has at least one placement
+        type: keyword
+
+      - id: density_range
+        description: Keyword density between 2-3% of total word count
+        type: keyword
+        min: 0.02
+        max: 0.03
+
+    scoring_guide: >
+      keyword_count_range: 40 pts (full if within range, -5 per keyword
+      outside range, floor 0). hard_req_coverage: 40 pts *
+      (covered_hard_reqs / total_hard_reqs). density_range: 20 pts if
+      within range, 10 if within 0.5% tolerance, else 0.
+      Score = sum of the three components.
+
+  # ── 7. Keyword Contextual Placement ────────────────────────
+  - id: keyword_contextual_placement
+    name: Keyword Contextual Placement
+    weight: 10
+    scorer: agent
+    description: >
+      Keywords must be woven naturally into achievement sentences rather
+      than appearing as standalone lists or stuffed phrases.
+    checks:
+      - id: no_keyword_stuffing
+        description: Keywords woven into achievement sentences, not standalone lists
+        type: keyword
+
+      - id: contextual_validation
+        description: Each keyword attached to a business outcome or method description
+        type: keyword
+
+      - id: acronym_expansion
+        description: >
+          Every acronym expanded on first mention
+          (e.g., "Search Engine Optimization (SEO)")
+        type: formatting
+
+    scoring_guide: >
+      Agent samples 10 keyword placements and rates each 0-2
+      (0 = stuffed, 1 = present but weak context, 2 = natural integration).
+      acronym_expansion is pass/fail for 20 pts.
+      Score = (sampled_score / 20) * 80 + acronym_pts.
+
+  # ── 8. Bullet Structure ────────────────────────────────────
+  - id: bullet_structure
+    name: Bullet Structure
+    weight: 5
+    scorer: script
+    description: >
+      Validates total bullet count, role count, and word-length
+      distribution to ensure a balanced, well-structured resume.
+    checks:
+      - id: total_bullet_count
+        description: 14-18 total bullets
+        type: structural
+        min: 14
+        max: 18
+
+      - id: role_count
+        description: 4-6 roles/projects on page
+        type: structural
+        min: 4
+        max: 6
+
+      - id: bullet_word_length
+        description: Each bullet 15-36 words
+        type: structural
+        min: 15
+        max: 36
+
+      - id: length_distribution
+        description: >
+          At least 4 SHORT (15-20 words), majority STANDARD (22-28 words),
+          max 2 LONG (>28 words)
+        type: structural
+
+    scoring_guide: >
+      total_bullet_count: 25 pts (within range = full, per-unit penalty
+      outside). role_count: 25 pts (same logic). bullet_word_length:
+      25 pts * (compliant_bullets / total_bullets). length_distribution:
+      25 pts if all three sub-constraints met, -8 per violation.
+      Score = sum of the four components.
+
+  # ── 9. Summary Quality ─────────────────────────────────────
+  - id: summary_quality
+    name: Summary Quality
+    weight: 5
+    scorer: agent
+    description: >
+      Professional summary must be concise, anchored to the target job
+      title, include a quantified claim, and avoid soft-skill filler.
+    checks:
+      - id: word_count
+        description: Professional summary <= 45 words
+        type: structural
+        max: 45
+
+      - id: jd_title_anchored
+        description: Summary contains the exact job title from the JD
+        type: content
+
+      - id: metric_driven
+        description: Summary includes at least one quantified claim
+        type: content
+        min: 1
+
+      - id: no_soft_skills
+        description: >
+          No soft skill claims in summary
+          (e.g., "strong communicator", "team player", "detail-oriented")
+        type: content
+
+    scoring_guide: >
+      word_count: 25 pts (pass/fail). jd_title_anchored: 25 pts
+      (pass/fail). metric_driven: 25 pts (pass/fail). no_soft_skills:
+      25 pts (pass/fail, deduct if any soft-skill phrase detected).
+      Score = sum of the four components.
+
+  # ── 10. Reframing Integrity ────────────────────────────────
+  - id: reframing_integrity
+    name: Reframing Integrity
+    weight: 5
+    scorer: agent
+    description: >
+      Ensures every claim stays within the reframe_ceiling from
+      career_ledger.yaml — no fabricated roles or unverifiable metrics.
+    checks:
+      - id: within_ceiling
+        description: Each bullet stays within the reframe_ceiling from career_ledger.yaml
+        type: content
+
+      - id: no_fabricated_roles
+        description: No responsibilities claimed that exceed the plausibility_ceiling
+        type: content
+
+      - id: metric_traceable
+        description: Every claimed metric maps to a real achievement in the ledger
+        type: content
+
+    scoring_guide: >
+      Agent cross-references each bullet against career_ledger.yaml.
+      within_ceiling: 40 pts * (compliant_bullets / total_bullets).
+      no_fabricated_roles: 30 pts (pass/fail). metric_traceable: 30 pts *
+      (traceable_metrics / total_metrics). Score = sum of three components.

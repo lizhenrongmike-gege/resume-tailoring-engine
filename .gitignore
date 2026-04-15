@@ -1,0 +1,66 @@
+# Dependencies
+node_modules/
+.venv/
+*.egg-info/
+
+# Python artifacts
+*.pyc
+__pycache__/
+.pytest_cache/
+
+# Databases / runtime artifacts
+*.db
+jobscan/jobscan.db
+jd_keywords.yaml
+
+# Secrets
+.env
+.env.local
+
+# OS junk
+.DS_Store
+Thumbs.db
+~
+
+# Editor / personal tooling
+.claude/
+.superpowers/
+.impeccable.md
+
+# User runs and personal inputs (do not commit)
+inputs/
+output/
+reports/
+tmp/
+
+# Personal career data
+career_ledger.yaml
+career_ledger.backup_*.yaml
+infos.text
+gap analysis.md
+gap_analysis.md
+
+# Personal copies of scanner profile files (your real matching data)
+jobscan/profile_*.local.yaml
+
+# Per-application tailoring run plans (reference real companies you've applied to)
+docs/plans/*tailoring-run*.md
+
+# Local backups of design docs you've since added PII to
+docs/superpowers.local/
+docs/templates/
+
+# Personal documents
+*.docx
+*.xlsx
+# (Test fixtures are allowed despite .xlsx exclusion — unignore below)
+!tests/fixtures/*.xlsx
+
+# Personal, one-off resume generators (contain PII)
+generate_accuris_resume.js
+
+# Nested project — tracked in its own repo
+jobcapture/
+
+# Alternate/draft skill revisions
+WUHU.md

@@ -1,0 +1,37 @@
+must_cover:
+  - keyword: "Python"
+    type: hard_req
+    status: PLACED
+  - keyword: "PyTorch"
+    type: hard_req
+    status: PLACED
+  - keyword: "SQL"
+    type: hard_req
+    status: PLACED
+  - keyword: "AWS SageMaker"
+    type: hard_req
+    status: PLACED
+  - keyword: "Docker"
+    type: hard_req
+    status: PLACED
+  - keyword: "Kubernetes"
+    type: hard_req
+    status: MISSING  # Not in candidate's experience
+  - keyword: "machine learning"
+    type: critical
+    status: PLACED
+  - keyword: "data pipelines"
+    type: critical
+    status: PLACED
+  - keyword: "A/B testing"
+    type: critical
+    status: PLACED
+  - keyword: "recommendation systems"
+    type: critical
+    status: PLACED
+  - keyword: "MLOps"
+    type: critical
+    status: MISSING  # Not explicitly mentioned
+  - keyword: "Spark"
+    type: preferred
+    status: MISSING  # Not in experience
