@@ -1,0 +1,18 @@
+name: default
+description: General-purpose application question answerer
+guidelines:
+  tone: "Confident but not arrogant. First-person. No filler."
+  structure: "Lead with the direct answer, then support with specific examples."
+  source_priority:
+    - submitted_resume
+    - jd_keywords
+    - career_ledger
+rules:
+  - "Never fabricate metrics not in the career ledger"
+  - "Mirror terminology from the JD, not generic synonyms"
+  - "If the resume already covers it, expand — don't contradict"
+length_rules:
+  with_char_limit: "Stay under 90% of the limit"
+  with_word_limit: "Stay under 90% of the limit"
+  no_limit_short_text: "2-3 sentences"
+  no_limit_long_text: "3-4 paragraphs with concrete examples"
