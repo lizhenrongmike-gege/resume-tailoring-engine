@@ -59,8 +59,14 @@ docs/templates/
 # Personal, one-off resume generators (contain PII)
 generate_accuris_resume.js
 
-# Nested project — tracked in its own repo
-jobcapture/
+# JobCapture — track source but exclude runtime artifacts & captured data
+jobcapture/**/__pycache__/
+jobcapture/**/.pytest_cache/
+jobcapture/**/.venv/
+jobcapture/dashboard/node_modules/
+jobcapture/dashboard/dist/
+jobcapture/backend/jobcapture.db
+jobcapture/backend/jobcapture.db-journal
 
 # Alternate/draft skill revisions
 WUHU.md
