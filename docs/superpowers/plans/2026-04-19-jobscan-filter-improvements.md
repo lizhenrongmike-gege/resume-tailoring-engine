@@ -24,7 +24,8 @@ Goal after this plan: ≤15 survivors, ≥6 of the 7 known-relevant roles still 
 
 | File | Responsibility | Change |
 |---|---|---|
-| `jobscan/config.py` | Lane defs, regex patterns, blocklists | Extend SENIORITY_PATTERN + EXCLUDED_TITLES; add POSITIVE_TITLE_KEYWORDS, EXCLUDED_DEPARTMENT_KEYWORDS; fix Deel slug, mark Clay disabled |
+| `jobscan/config.py` | Lane defs, regex patterns, blocklists | Extend SENIORITY_PATTERN + EXCLUDED_TITLES; load POSITIVE_TITLE_KEYWORDS + EXCLUDED_DEPARTMENT_KEYWORDS from YAML; fix Deel slug, mark Clay disabled |
+| `jobscan/filter_keywords.yaml` | User-editable positive titles + excluded departments | NEW — organized by lane so the user can tune without touching Python |
 | `jobscan/connectors/base.py` | `RawPosting` dataclass | Add `department: str = ""` field |
 | `jobscan/connectors/greenhouse.py` | Greenhouse parser | Populate `department` from `departments[].name` |
 | `jobscan/connectors/ashby.py` | Ashby parser | Populate `department` from `department`; add `?includeCompensation=true` |
@@ -134,12 +135,16 @@ git commit -m "feat(jobscan): broaden seniority and excluded-title filters"
 
 ---
 
-## Task 2: Add positive title keyword filter
+## Task 2: Add positive title keyword filter (YAML-backed)
+
+**Design intent:** The positive title list is the user's primary tuning knob. It must be editable without touching Python. We externalize it to `jobscan/filter_keywords.yaml`, organized by lane with comments. `config.py` reads the file at import time and exposes a flat `POSITIVE_TITLE_KEYWORDS` list to the filter.
 
 **Files:**
-- Modify: `jobscan/config.py` (add `POSITIVE_TITLE_KEYWORDS`)
-- Modify: `jobscan/filters.py` (add positive check before exclusions)
-- Modify: `tests/test_filters.py` (tests + update existing fixture if needed)
+- Create: `jobscan/filter_keywords.yaml`
+- Modify: `jobscan/config.py` (load YAML, expose flat list)
+- Modify: `jobscan/filters.py` (add positive check)
+- Modify: `tests/test_filters.py` (tests)
+- Modify: `tests/test_config.py` (test YAML load + flatten)
 
 - [ ] **Step 1: Write failing tests**
 
@@ -157,7 +162,6 @@ def test_positive_keyword_required():
 
 def test_positive_keyword_match_passes():
     # "Fraud Analyst" is the default fixture — already a positive match
-    # Sanity check additional positive variants:
     postings = [
         _posting(title="Risk Operations Analyst"),
         _posting(title="Trust & Safety Analyst"),
@@ -173,46 +177,149 @@ def test_positive_keyword_match_passes():
     assert len(result.passed) == len(postings), [r for r in result.reasons.values()]
 ```
 
-- [ ] **Step 2: Run tests — verify FAIL**
-
-Run: `pytest tests/test_filters.py::test_positive_keyword_required -v`
-Expected: FAIL (filter currently has no positive gate).
-
-- [ ] **Step 3: Add `POSITIVE_TITLE_KEYWORDS` to `jobscan/config.py`**
-
-Append to `jobscan/config.py`:
+Append to `tests/test_config.py`:
 
 ```python
-# At least one of these substrings (case-insensitive) must appear in the
-# job title for it to pass the hard filter. Curated from LANES.acceptable_titles
-# plus common variants seen in real ATS data.
-POSITIVE_TITLE_KEYWORDS = [
-    # Lane 1 — Risk / Fraud / Payments / Onboarding Ops
-    "Risk", "Fraud", "Trust & Safety", "Trust and Safety",
-    "KYC", "AML", "Compliance", "Disputes", "Identity",
-    "Onboarding", "Merchant",
-    # Lane 2 — Operations-linked Data Analyst
-    "Data Analyst", "Operations Analyst", "Ops Analyst",
-    "Business Analyst", "Business Operations", "Business Operations Analyst",
-    "Strategy and Operations", "Strategy & Operations",
-    # Lane 3 — AI Implementation / Solutions / Technical Ops
-    "Implementation Engineer", "Implementation Consultant",
-    "Solutions Engineer", "Technical Success", "Customer Success Engineer",
-    "Technical Operations", "Deployment Engineer",
-    "Onboarding Engineer", "Professional Services Engineer",
-    "AI Solutions",
-    # Lane 4 — GTM Engineer
-    "GTM", "Revenue Operations", "RevOps", "Marketing Technologist",
-    "Growth Engineer", "Sales Engineering",
-    # Generic AI/ML — pass through; Lane 3 customer-facing gate already exists
-    "AI Engineer", "ML Engineer", "LLM Engineer",
-    "Applied AI",
-]
+def test_positive_title_keywords_loaded_and_flat():
+    from jobscan.config import POSITIVE_TITLE_KEYWORDS
+    assert isinstance(POSITIVE_TITLE_KEYWORDS, list)
+    assert all(isinstance(k, str) for k in POSITIVE_TITLE_KEYWORDS)
+    # Sanity: a few known entries from each lane present
+    expected = {"Fraud", "Data Analyst", "Solutions Engineer", "GTM"}
+    assert expected.issubset(set(POSITIVE_TITLE_KEYWORDS))
 ```
 
-- [ ] **Step 4: Add positive check to `jobscan/filters.py`**
+- [ ] **Step 2: Run tests — verify FAIL**
 
-Update the import block at the top of `jobscan/filters.py`:
+Run: `pytest tests/test_filters.py::test_positive_keyword_required tests/test_config.py::test_positive_title_keywords_loaded_and_flat -v`
+Expected: both FAIL.
+
+- [ ] **Step 3: Create `jobscan/filter_keywords.yaml`**
+
+Create new file with this exact content:
+
+```yaml
+# Filter keywords for jobscan hard filter.
+# Edit freely — changes take effect on the next scan run.
+#
+# positive_title_keywords:
+#   For a job to pass, its title must contain (case-insensitive substring)
+#   at least ONE of these keywords. Organized by lane for readability;
+#   the loader flattens all lanes into a single list.
+#
+# excluded_department_keywords:
+#   A job is rejected if its `department` field contains (case-insensitive
+#   substring) any of these. Used to drop sales/marketing/infra roles even
+#   when the title would otherwise pass.
+
+positive_title_keywords:
+  lane_1_risk_fraud_payments_onboarding_ops:
+    - Risk
+    - Fraud
+    - Trust & Safety
+    - Trust and Safety
+    - KYC
+    - AML
+    - Compliance
+    - Disputes
+    - Identity
+    - Onboarding
+    - Merchant
+
+  lane_2_operations_data_analyst:
+    - Data Analyst
+    - Operations Analyst
+    - Ops Analyst
+    - Business Analyst
+    - Business Operations
+    - Business Operations Analyst
+    - Strategy and Operations
+    - Strategy & Operations
+
+  lane_3_ai_implementation_solutions:
+    - Implementation Engineer
+    - Implementation Consultant
+    - Solutions Engineer
+    - Technical Success
+    - Customer Success Engineer
+    - Technical Operations
+    - Deployment Engineer
+    - Onboarding Engineer
+    - Professional Services Engineer
+    - AI Solutions
+
+  lane_4_gtm:
+    - GTM
+    - Revenue Operations
+    - RevOps
+    - Marketing Technologist
+    - Growth Engineer
+    - Sales Engineering
+
+  generic_applied_ai:
+    # Pure AI Engineer roles still gated by customer-signal check in filters.py
+    - AI Engineer
+    - ML Engineer
+    - LLM Engineer
+    - Applied AI
+
+excluded_department_keywords:
+  - Sales
+  - Account Executive
+  - Marketing
+  - Communications
+  - Public Relations
+  - Recruiting
+  - People
+  - Human Resources
+  - Finance
+  - Accounting
+  - Legal
+  - Infrastructure
+  - Platform Engineering
+  - Mobile Engineering
+  - Hardware
+  - Research Science
+  - Design
+  - Brand
+```
+
+- [ ] **Step 4: Update `jobscan/config.py` to load YAML**
+
+Add to the top of `jobscan/config.py` (after the existing `import re`):
+
+```python
+from pathlib import Path
+
+import yaml
+
+_FILTER_KEYWORDS_PATH = Path(__file__).parent / "filter_keywords.yaml"
+
+
+def _load_filter_keywords() -> dict:
+    with open(_FILTER_KEYWORDS_PATH, "r") as f:
+        return yaml.safe_load(f)
+
+
+_filter_keywords = _load_filter_keywords()
+
+# Flatten lane-grouped positive keywords into one list for the filter.
+POSITIVE_TITLE_KEYWORDS: list[str] = [
+    keyword
+    for lane_keywords in _filter_keywords["positive_title_keywords"].values()
+    for keyword in lane_keywords
+]
+
+EXCLUDED_DEPARTMENT_KEYWORDS: list[str] = list(
+    _filter_keywords["excluded_department_keywords"]
+)
+```
+
+(The `EXCLUDED_DEPARTMENT_KEYWORDS` export is consumed by Task 4 — defining it here keeps both knobs in one place.)
+
+- [ ] **Step 5: Add positive check to `jobscan/filters.py`**
+
+Update the import block at the top:
 
 ```python
 from jobscan.config import (
@@ -221,7 +328,7 @@ from jobscan.config import (
 )
 ```
 
-Insert this check at the **start** of `_check_posting()`, before the seniority check:
+Insert at the **start** of `_check_posting()`, before the seniority check:
 
 ```python
     title_lower = title.lower()
@@ -229,16 +336,16 @@ Insert this check at the **start** of `_check_posting()`, before the seniority c
         return "No positive title keyword match"
 ```
 
-- [ ] **Step 5: Run all filter tests — verify PASS**
+- [ ] **Step 6: Run all filter + config tests — verify PASS**
 
-Run: `pytest tests/test_filters.py -v`
-Expected: all tests pass. If any prior test fails because its fixture title (e.g. `"Old Role"`) no longer matches a positive keyword, that's expected — update that test's title to something like `"Fraud Analyst"`.
+Run: `pytest tests/test_filters.py tests/test_config.py -v`
+Expected: all pass.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
-git add jobscan/config.py jobscan/filters.py tests/test_filters.py
-git commit -m "feat(jobscan): add positive title keyword filter"
+git add jobscan/filter_keywords.yaml jobscan/config.py jobscan/filters.py tests/test_filters.py tests/test_config.py
+git commit -m "feat(jobscan): add YAML-backed positive title keyword filter"
 ```
 
 ---
@@ -470,14 +577,16 @@ git commit -m "feat(jobscan): extract department from Greenhouse/Ashby/Lever con
 
 ---
 
-## Task 4: Add department exclusion filter
+## Task 4: Add department exclusion filter (YAML-backed)
+
+**Design intent:** `EXCLUDED_DEPARTMENT_KEYWORDS` was already defined in Task 2 by loading from `jobscan/filter_keywords.yaml`. This task only wires it into the filter pipeline. The user can edit the YAML to add/remove excluded departments without touching Python.
 
 **Files:**
-- Modify: `jobscan/config.py` (add `EXCLUDED_DEPARTMENT_KEYWORDS`)
 - Modify: `jobscan/filters.py` (add department check)
 - Modify: `tests/test_filters.py` (tests)
+- Modify: `tests/test_config.py` (test YAML load for excluded_department_keywords)
 
-- [ ] **Step 1: Write failing test**
+- [ ] **Step 1: Write failing tests**
 
 Append to `tests/test_filters.py`:
 
@@ -506,45 +615,25 @@ def test_allowed_department_passes():
     assert len(result.passed) == 2
 ```
 
-- [ ] **Step 2: Run test — verify FAIL**
-
-Run: `pytest tests/test_filters.py::test_excluded_department_filter -v`
-Expected: FAIL.
-
-- [ ] **Step 3: Add `EXCLUDED_DEPARTMENT_KEYWORDS` to `jobscan/config.py`**
-
-Append:
+Append to `tests/test_config.py`:
 
 ```python
-# Substrings (case-insensitive) that, if present in posting.department,
-# disqualify the role even when the title looks acceptable. Targets sales,
-# infra-engineering, comms, and other departments that are off-lane regardless
-# of how the title reads.
-EXCLUDED_DEPARTMENT_KEYWORDS = [
-    "Sales",
-    "Account Executive",
-    "Marketing",
-    "Communications",
-    "Public Relations",
-    "Recruiting",
-    "People",
-    "Human Resources",
-    "Finance",
-    "Accounting",
-    "Legal",
-    "Infrastructure",
-    "Platform Engineering",
-    "Mobile Engineering",
-    "Hardware",
-    "Research Science",
-    "Design",
-    "Brand",
-]
+def test_excluded_department_keywords_loaded():
+    from jobscan.config import EXCLUDED_DEPARTMENT_KEYWORDS
+    assert isinstance(EXCLUDED_DEPARTMENT_KEYWORDS, list)
+    assert all(isinstance(d, str) for d in EXCLUDED_DEPARTMENT_KEYWORDS)
+    expected = {"Sales", "Marketing", "Infrastructure"}
+    assert expected.issubset(set(EXCLUDED_DEPARTMENT_KEYWORDS))
 ```
 
-- [ ] **Step 4: Add department check to `jobscan/filters.py`**
+- [ ] **Step 2: Run tests — verify FAIL**
 
-Add to the import block:
+Run: `pytest tests/test_filters.py::test_excluded_department_filter -v`
+Expected: FAIL (no department check yet). The config test should already PASS from Task 2 — that's fine, it's a regression guard.
+
+- [ ] **Step 3: Add department check to `jobscan/filters.py`**
+
+Update the import block to include `EXCLUDED_DEPARTMENT_KEYWORDS`:
 
 ```python
 from jobscan.config import (
@@ -563,16 +652,16 @@ Insert after the excluded-title loop and before the AI Engineer check:
                 return f"Excluded department: {posting.department}"
 ```
 
-- [ ] **Step 5: Run all filter tests — verify PASS**
+- [ ] **Step 4: Run all filter + config tests — verify PASS**
 
-Run: `pytest tests/test_filters.py -v`
+Run: `pytest tests/test_filters.py tests/test_config.py -v`
 Expected: all pass.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 5: Commit**
 
 ```bash
-git add jobscan/config.py jobscan/filters.py tests/test_filters.py
-git commit -m "feat(jobscan): exclude off-lane departments (sales, infra, comms, etc.)"
+git add jobscan/filters.py tests/test_filters.py tests/test_config.py
+git commit -m "feat(jobscan): wire YAML-backed department exclusion into filter"
 ```
 
 ---
