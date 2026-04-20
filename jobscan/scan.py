@@ -75,6 +75,8 @@ def run_tier1(days_back: int) -> list[RawPosting]:
     postings: list[RawPosting] = []
 
     for company in PRIORITY_COMPANIES:
+        if company.get("enabled", True) is False:
+            continue
         ats = company["ats"]
         if ats not in _CONNECTORS:
             logger.warning("  Unknown ATS '%s' for %s — skipping", ats, company["name"])

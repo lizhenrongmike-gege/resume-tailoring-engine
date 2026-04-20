@@ -131,8 +131,8 @@ PRIORITY_COMPANIES = [
     {"name": "Harper", "ats": "unknown", "slug": "harper"},
     {"name": "Revic", "ats": "unknown", "slug": "revic"},
     {"name": "Zyphra", "ats": "unknown", "slug": "zyphra"},
-    {"name": "Deel", "ats": "greenhouse", "slug": "deel"},
-    {"name": "Clay", "ats": "ashby", "slug": "clay"},
+    {"name": "Deel", "ats": "greenhouse", "slug": "deel", "enabled": False},
+    {"name": "Clay", "ats": "ashby", "slug": "clay", "enabled": False},
 ]
 
 SENIORITY_PATTERN = (
