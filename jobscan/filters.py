@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from jobscan.connectors.base import RawPosting
 from jobscan.config import (
     SENIORITY_PATTERN, YOE_PATTERN, EXCLUDED_TITLES, LOCATION_ALLOW_PATTERN,
+    POSITIVE_TITLE_KEYWORDS,
 )
 
 _CUSTOMER_SIGNALS = re.compile(
@@ -24,6 +25,10 @@ class FilterResult:
 
 def _check_posting(posting: RawPosting) -> str | None:
     title = posting.title
+
+    title_lower = title.lower()
+    if not any(kw.lower() in title_lower for kw in POSITIVE_TITLE_KEYWORDS):
+        return "No positive title keyword match"
 
     if re.search(SENIORITY_PATTERN, title, re.IGNORECASE):
         return "Seniority filter: title contains seniority keyword"

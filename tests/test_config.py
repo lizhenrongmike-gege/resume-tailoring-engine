@@ -79,3 +79,11 @@ def test_location_allow_pattern():
                 "Mountain View, CA", "Anywhere", "Remote US",
                 "United States (Remote)"]:
         assert re.search(LOCATION_ALLOW_PATTERN, loc, re.IGNORECASE), f"Should allow: {loc}"
+
+
+def test_positive_title_keywords_loaded_and_flat():
+    from jobscan.config import POSITIVE_TITLE_KEYWORDS
+    assert isinstance(POSITIVE_TITLE_KEYWORDS, list)
+    assert all(isinstance(k, str) for k in POSITIVE_TITLE_KEYWORDS)
+    expected = {"Fraud", "Data Analyst", "Solutions Engineer", "GTM"}
+    assert expected.issubset(set(POSITIVE_TITLE_KEYWORDS))

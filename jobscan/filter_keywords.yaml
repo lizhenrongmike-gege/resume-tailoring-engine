@@ -1,0 +1,83 @@
+# Filter keywords for jobscan hard filter.
+# Edit freely — changes take effect on the next scan run.
+#
+# positive_title_keywords:
+#   For a job to pass, its title must contain (case-insensitive substring)
+#   at least ONE of these keywords. Organized by lane for readability;
+#   the loader flattens all lanes into a single list.
+#
+# excluded_department_keywords:
+#   A job is rejected if its `department` field contains (case-insensitive
+#   substring) any of these. Used to drop sales/marketing/infra roles even
+#   when the title would otherwise pass.
+
+positive_title_keywords:
+  lane_1_risk_fraud_payments_onboarding_ops:
+    - Risk
+    - Fraud
+    - Trust & Safety
+    - Trust and Safety
+    - KYC
+    - AML
+    - Compliance
+    - Disputes
+    - Identity
+    - Onboarding
+    - Merchant
+
+  lane_2_operations_data_analyst:
+    - Data Analyst
+    - Operations Analyst
+    - Ops Analyst
+    - Business Analyst
+    - Business Operations
+    - Business Operations Analyst
+    - Strategy and Operations
+    - Strategy & Operations
+
+  lane_3_ai_implementation_solutions:
+    - Implementation Engineer
+    - Implementation Consultant
+    - Solutions Engineer
+    - Technical Success
+    - Customer Success Engineer
+    - Technical Operations
+    - Deployment Engineer
+    - Onboarding Engineer
+    - Professional Services Engineer
+    - AI Solutions
+
+  lane_4_gtm:
+    - GTM
+    - Revenue Operations
+    - RevOps
+    - Marketing Technologist
+    - Growth Engineer
+    - Sales Engineering
+
+  generic_applied_ai:
+    # Pure AI Engineer roles still gated by customer-signal check in filters.py
+    - AI Engineer
+    - ML Engineer
+    - LLM Engineer
+    - Applied AI
+
+excluded_department_keywords:
+  - Sales
+  - Account Executive
+  - Marketing
+  - Communications
+  - Public Relations
+  - Recruiting
+  - People
+  - Human Resources
+  - Finance
+  - Accounting
+  - Legal
+  - Infrastructure
+  - Platform Engineering
+  - Mobile Engineering
+  - Hardware
+  - Research Science
+  - Design
+  - Brand

@@ -2,6 +2,30 @@
 from __future__ import annotations
 
 import re
+from pathlib import Path
+
+import yaml
+
+_FILTER_KEYWORDS_PATH = Path(__file__).parent / "filter_keywords.yaml"
+
+
+def _load_filter_keywords() -> dict:
+    with open(_FILTER_KEYWORDS_PATH, "r") as f:
+        return yaml.safe_load(f)
+
+
+_filter_keywords = _load_filter_keywords()
+
+# Flatten lane-grouped positive keywords into one list for the filter.
+POSITIVE_TITLE_KEYWORDS: list[str] = [
+    keyword
+    for lane_keywords in _filter_keywords["positive_title_keywords"].values()
+    for keyword in lane_keywords
+]
+
+EXCLUDED_DEPARTMENT_KEYWORDS: list[str] = list(
+    _filter_keywords["excluded_department_keywords"]
+)
 
 LANES = [
     {
