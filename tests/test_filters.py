@@ -150,6 +150,13 @@ def test_positive_keyword_required():
     assert "positive" in list(result.reasons.values())[0].lower()
 
 
+def test_excluded_title_overrides_positive_match():
+    # "Risk" is a positive keyword, but "Software Engineer" must still be excluded.
+    result = apply_hard_filters([_posting(title="Risk Software Engineer")])
+    assert len(result.passed) == 0
+    assert "excluded title" in list(result.reasons.values())[0].lower()
+
+
 def test_positive_keyword_match_passes():
     # "Fraud Analyst" is the default fixture — already a positive match
     postings = [

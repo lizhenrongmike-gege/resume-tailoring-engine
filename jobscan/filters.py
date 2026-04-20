@@ -25,15 +25,14 @@ class FilterResult:
 
 def _check_posting(posting: RawPosting) -> str | None:
     title = posting.title
+    title_lower = title.strip().lower()
 
-    title_lower = title.lower()
     if not any(kw.lower() in title_lower for kw in POSITIVE_TITLE_KEYWORDS):
         return "No positive title keyword match"
 
     if re.search(SENIORITY_PATTERN, title, re.IGNORECASE):
         return "Seniority filter: title contains seniority keyword"
 
-    title_lower = title.strip().lower()
     for excluded in EXCLUDED_TITLES:
         if excluded.lower() in title_lower:
             return f"Excluded title: {excluded}"

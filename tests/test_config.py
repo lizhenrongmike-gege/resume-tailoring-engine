@@ -87,3 +87,10 @@ def test_positive_title_keywords_loaded_and_flat():
     assert all(isinstance(k, str) for k in POSITIVE_TITLE_KEYWORDS)
     expected = {"Fraud", "Data Analyst", "Solutions Engineer", "GTM"}
     assert expected.issubset(set(POSITIVE_TITLE_KEYWORDS))
+
+
+def test_excluded_department_keywords_loaded():
+    from jobscan.config import EXCLUDED_DEPARTMENT_KEYWORDS
+    assert isinstance(EXCLUDED_DEPARTMENT_KEYWORDS, list)
+    assert all(isinstance(d, str) for d in EXCLUDED_DEPARTMENT_KEYWORDS)
+    assert len(EXCLUDED_DEPARTMENT_KEYWORDS) > 0
