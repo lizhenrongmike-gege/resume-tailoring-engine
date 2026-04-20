@@ -49,3 +49,22 @@ def test_raw_posting_equality():
         description="...", url="https://x.com", posted_date=None, source="greenhouse",
     )
     assert RawPosting(**kwargs) == RawPosting(**kwargs)
+
+
+def test_raw_posting_has_department_default():
+    from jobscan.connectors.base import RawPosting
+    p = RawPosting(
+        title="X", company="Y", location="Z",
+        description="", url="", posted_date=None, source="test",
+    )
+    assert p.department == ""
+
+
+def test_raw_posting_accepts_department():
+    from jobscan.connectors.base import RawPosting
+    p = RawPosting(
+        title="X", company="Y", location="Z",
+        description="", url="", posted_date=None, source="test",
+        department="Risk",
+    )
+    assert p.department == "Risk"

@@ -105,3 +105,94 @@ def test_multiple_filters_reports_first_reason():
     ])
     assert len(result.passed) == 0
     assert len(result.failed) == 1
+
+
+def test_chief_and_officer_titles_filtered():
+    postings = [
+        _posting(title="Chief Audit Officer"),
+        _posting(title="Chief Risk Officer"),
+        _posting(title="Head of Compliance"),
+    ]
+    result = apply_hard_filters(postings)
+    assert len(result.passed) == 0
+    assert all("seniority" in r.lower() for r in result.reasons.values())
+
+
+def test_extended_excluded_titles_filtered():
+    postings = [
+        _posting(title="AV Engineer"),
+        _posting(title="IT Engineer"),
+        _posting(title="Data Center Engineer II"),
+        _posting(title="Design Engineer, Presence"),
+        _posting(title="Android Engineer, Terminal"),
+        _posting(title="iOS Engineer"),
+        _posting(title="Research Engineer – Training Infra"),
+        _posting(title="Account Executive, Funded Startups"),
+        _posting(title="Sales Development Representative"),
+        _posting(title="Customer Support Specialist"),
+        _posting(title="Accountant"),
+        _posting(title="Production Support Engineer"),
+    ]
+    result = apply_hard_filters(postings)
+    assert len(result.passed) == 0
+    # Each posting is caught by either the positive-keyword check or the excluded-title check.
+    # With the positive filter running first, titles that lack a positive keyword are rejected
+    # before reaching the EXCLUDED_TITLES check — so we only assert all postings are rejected.
+    assert len(result.failed) == len(postings)
+
+
+def test_positive_keyword_required():
+    # Title with no positive keyword and no obvious exclusion — should fail
+    result = apply_hard_filters([
+        _posting(title="Reserve Operations Deputy"),
+    ])
+    assert len(result.passed) == 0
+    assert "positive" in list(result.reasons.values())[0].lower()
+
+
+def test_excluded_title_overrides_positive_match():
+    # "Risk" is a positive keyword, but "Software Engineer" must still be excluded.
+    result = apply_hard_filters([_posting(title="Risk Software Engineer")])
+    assert len(result.passed) == 0
+    assert "excluded title" in list(result.reasons.values())[0].lower()
+
+
+def test_excluded_department_filter():
+    postings = [
+        _posting(title="Data Analyst",
+                 department="Sales - Account Executives (NA)"),
+        _posting(title="Operations Analyst",
+                 department="Engineering - Infrastructure"),
+        _posting(title="Risk Analyst",
+                 department="Marketing"),
+    ]
+    result = apply_hard_filters(postings)
+    assert len(result.passed) == 0
+    assert all("department" in r.lower() for r in result.reasons.values())
+
+
+def test_allowed_department_passes():
+    postings = [
+        _posting(title="Data Analyst", department="Risk"),
+        _posting(title="Operations Analyst",
+                 department="Trust & Safety"),
+    ]
+    result = apply_hard_filters(postings)
+    assert len(result.passed) == 2
+
+
+def test_positive_keyword_match_passes():
+    # "Fraud Analyst" is the default fixture — already a positive match
+    postings = [
+        _posting(title="Risk Operations Analyst"),
+        _posting(title="Trust & Safety Analyst"),
+        _posting(title="GTM Engineer"),
+        _posting(title="Implementation Engineer"),
+        _posting(title="Solutions Engineer"),
+        _posting(title="KYC Analyst"),
+        _posting(title="Compliance Analyst"),
+        _posting(title="Data Analyst"),
+        _posting(title="Business Operations Analyst"),
+    ]
+    result = apply_hard_filters(postings)
+    assert len(result.passed) == len(postings), [r for r in result.reasons.values()]

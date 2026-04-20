@@ -58,3 +58,27 @@ def test_fetch_handles_error(mock_post):
 
     conn = AshbyConnector()
     assert conn.fetch_company("bad", "Bad", days_back=7) == []
+
+
+SAMPLE_ASHBY_WITH_DEPT = {
+    "jobs": [
+        {
+            "title": "Compliance Analyst",
+            "location": "San Francisco, CA",
+            "jobUrl": "https://jobs.ashbyhq.com/decagon/abc",
+            "descriptionPlain": "Compliance work.",
+            "publishedAt": (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%S+00:00"),
+            "department": "Legal & Compliance",
+        }
+    ]
+}
+
+@patch("jobscan.connectors.ashby.requests.post")
+def test_department_extracted_ashby(mock_post):
+    mock_resp = MagicMock()
+    mock_resp.status_code = 200
+    mock_resp.json.return_value = SAMPLE_ASHBY_WITH_DEPT
+    mock_post.return_value = mock_resp
+    from jobscan.connectors.ashby import AshbyConnector
+    results = AshbyConnector().fetch_company("decagon", "Decagon", days_back=7)
+    assert results[0].department == "Legal & Compliance"

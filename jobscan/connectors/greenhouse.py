@@ -56,6 +56,9 @@ class GreenhouseConnector(BaseConnector):
             if posted < cutoff:
                 continue
 
+            depts = job.get("departments") or []
+            dept = ", ".join(d.get("name", "") for d in depts if d.get("name"))
+
             results.append(RawPosting(
                 title=job.get("title", ""),
                 company=company_name,
@@ -64,6 +67,7 @@ class GreenhouseConnector(BaseConnector):
                 url=job.get("absolute_url", ""),
                 posted_date=posted.strftime("%Y-%m-%d"),
                 source="greenhouse",
+                department=dept,
             ))
 
         return results

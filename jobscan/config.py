@@ -2,6 +2,30 @@
 from __future__ import annotations
 
 import re
+from pathlib import Path
+
+import yaml
+
+_FILTER_KEYWORDS_PATH = Path(__file__).parent / "filter_keywords.yaml"
+
+
+def _load_filter_keywords() -> dict:
+    with open(_FILTER_KEYWORDS_PATH, "r") as f:
+        return yaml.safe_load(f)
+
+
+_filter_keywords = _load_filter_keywords()
+
+# Flatten lane-grouped positive keywords into one list for the filter.
+POSITIVE_TITLE_KEYWORDS: list[str] = [
+    keyword
+    for lane_keywords in _filter_keywords["positive_title_keywords"].values()
+    for keyword in lane_keywords
+]
+
+EXCLUDED_DEPARTMENT_KEYWORDS: list[str] = list(
+    _filter_keywords["excluded_department_keywords"]
+)
 
 LANES = [
     {
@@ -107,11 +131,14 @@ PRIORITY_COMPANIES = [
     {"name": "Harper", "ats": "unknown", "slug": "harper"},
     {"name": "Revic", "ats": "unknown", "slug": "revic"},
     {"name": "Zyphra", "ats": "unknown", "slug": "zyphra"},
-    {"name": "Deel", "ats": "greenhouse", "slug": "deel"},
-    {"name": "Clay", "ats": "ashby", "slug": "clay"},
+    {"name": "Deel", "ats": "greenhouse", "slug": "deel", "enabled": False},
+    {"name": "Clay", "ats": "ashby", "slug": "clay", "enabled": False},
 ]
 
-SENIORITY_PATTERN = r"\b(?:Senior|Sr\.?|Staff|Principal|Lead|Manager|Director|VP|Head)\b"
+SENIORITY_PATTERN = (
+    r"\b(?:Senior|Sr\.?|Staff|Principal|Lead|Manager|Director|VP|"
+    r"Head(?:\s+of)?|Chief)\b"
+)
 
 YOE_PATTERN = r"(?:[4-9]|[1-9]\d)\s*\\?\+?\s*(?:years?|yrs?)\b"
 
@@ -158,6 +185,22 @@ EXCLUDED_TITLES = [
     "Designer",
     "Copywriter",
     "Content Writer",
+    "AV Engineer",
+    "IT Engineer",
+    "Data Center Engineer",
+    "Design Engineer",
+    "Android Engineer",
+    "iOS Engineer",
+    "Mobile Engineer",
+    "Research Engineer",
+    "Account Executive",
+    "Sales Development Representative",
+    "Business Development Representative",
+    "Customer Support",
+    "Support Specialist",
+    "Accountant",
+    "Creative Technologist",
+    "Production Support Engineer",
 ]
 
 LOCATION_ALLOW_PATTERN = (
