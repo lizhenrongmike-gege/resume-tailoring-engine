@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from jobscan.connectors.base import RawPosting
 from jobscan.config import (
     SENIORITY_PATTERN, YOE_PATTERN, EXCLUDED_TITLES, LOCATION_ALLOW_PATTERN,
-    POSITIVE_TITLE_KEYWORDS,
+    POSITIVE_TITLE_KEYWORDS, EXCLUDED_DEPARTMENT_KEYWORDS,
 )
 
 _CUSTOMER_SIGNALS = re.compile(
@@ -36,6 +36,12 @@ def _check_posting(posting: RawPosting) -> str | None:
     for excluded in EXCLUDED_TITLES:
         if excluded.lower() in title_lower:
             return f"Excluded title: {excluded}"
+
+    if posting.department:
+        dept_lower = posting.department.lower()
+        for excluded in EXCLUDED_DEPARTMENT_KEYWORDS:
+            if excluded.lower() in dept_lower:
+                return f"Excluded department: {posting.department}"
 
     # Check for pure AI Engineer (no customer-facing signals)
     if re.search(r"AI\s+Engineer", title, re.IGNORECASE):

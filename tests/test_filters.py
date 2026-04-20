@@ -157,6 +157,30 @@ def test_excluded_title_overrides_positive_match():
     assert "excluded title" in list(result.reasons.values())[0].lower()
 
 
+def test_excluded_department_filter():
+    postings = [
+        _posting(title="Data Analyst",
+                 department="Sales - Account Executives (NA)"),
+        _posting(title="Operations Analyst",
+                 department="Engineering - Infrastructure"),
+        _posting(title="Risk Analyst",
+                 department="Marketing"),
+    ]
+    result = apply_hard_filters(postings)
+    assert len(result.passed) == 0
+    assert all("department" in r.lower() for r in result.reasons.values())
+
+
+def test_allowed_department_passes():
+    postings = [
+        _posting(title="Data Analyst", department="Risk"),
+        _posting(title="Operations Analyst",
+                 department="Trust & Safety"),
+    ]
+    result = apply_hard_filters(postings)
+    assert len(result.passed) == 2
+
+
 def test_positive_keyword_match_passes():
     # "Fraud Analyst" is the default fixture — already a positive match
     postings = [
