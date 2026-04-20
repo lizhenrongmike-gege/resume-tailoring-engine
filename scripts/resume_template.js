@@ -29,10 +29,10 @@ const profile = {
     body: 20,
   },
   spacing: {
-    section: { before: 70, after: 20, line: 240 },
+    section: { before: 50, after: 20, line: 240 },
     role: { before: 18, after: 0, line: 240 },
-    bullet: { before: 0, after: 4, line: 240 },
-    body: { before: 0, after: 4, line: 240 },
+    bullet: { before: 0, after: 2, line: 240 },
+    body: { before: 0, after: 2, line: 240 },
   },
   bullets: { indentLeft: 360, indentHanging: 180 },
   rightTab: 11040,

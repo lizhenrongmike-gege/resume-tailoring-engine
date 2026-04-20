@@ -15,6 +15,7 @@ The project is built as a family of **Claude Code skills** (`SKILL.md`, `BATCH.m
 | **Quality grader** | Score a generated resume on 8 dimensions (4 automated, 4 agentic) | `GRADE.md` + `scripts/grade_resume.py` |
 | **Gap closer** | Diagnose career gaps vs. a target role and output a 30-day plan | `gap-closer/SKILL.md` |
 | **Job scanner** | Discover relevant openings via Greenhouse / JobSpy / web search, rank with Claude | `jobscan/scan.py` |
+| **JobCapture** | Capture JDs from the browser, manage them via a dashboard, and feed batch mode | `jobcapture/` |
 
 ---
 
@@ -99,6 +100,54 @@ Configure which tiers are live and which models to use via `.env` (see `.env.exa
 
 ---
 
+## Quickstart — JobCapture (browser → dashboard → batch)
+
+JobCapture is a three-part companion app that lets you clip job descriptions from any careers page and queue them for batch tailoring. It lives under `jobcapture/` and has three components:
+
+- **Backend** — FastAPI + SQLite (`jobcapture/backend/`)
+- **Dashboard** — Vite + React UI (`jobcapture/dashboard/`)
+- **Extension** — Chrome extension for one-click capture (`jobcapture/extension/`)
+
+### 1. Start the backend
+
+```bash
+cd jobcapture/backend
+python3 -m venv .venv && source .venv/bin/activate   # first time only
+pip install -r requirements.txt                      # first time only
+uvicorn app.main:app --reload
+```
+
+Verify at http://localhost:8000/api/health — you should see `{"status":"ok"}`. Interactive API docs at http://localhost:8000/docs.
+
+If port 8000 is already taken by a stuck process:
+
+```bash
+lsof -ti :8000 | xargs kill -9
+```
+
+### 2. Start the dashboard
+
+In a new terminal:
+
+```bash
+cd jobcapture/dashboard
+npm install      # first time only
+npm run dev
+```
+
+Open the URL Vite prints (usually http://localhost:5173). The dashboard talks to the backend on `localhost:8000`.
+
+### 3. Load the Chrome extension
+
+1. Go to `chrome://extensions`
+2. Turn on **Developer mode** (top-right toggle)
+3. Click **Load unpacked** and select `jobcapture/extension/`
+4. Pin the extension, then click its icon on a job posting page to capture the JD
+
+Captured JDs flow into the backend, show up in the dashboard, and can be exported into the Excel files consumed by `batch tailor manual`.
+
+---
+
 ## Project layout
 
 ```
@@ -107,6 +156,7 @@ Configure which tiers are live and which models to use via `.env` (see `.env.exa
 ├── BATCH.md               # Batch-processing skill
 ├── GRADE.md               # Quality grader skill
 ├── gap-closer/            # Career-gap analysis skill
+├── jobcapture/            # Browser extension + dashboard + FastAPI backend
 ├── jobscan/               # Job discovery + ranking pipeline
 │   ├── scan.py            #   CLI entry point
 │   ├── connectors/        #   Greenhouse, JobSpy, web search

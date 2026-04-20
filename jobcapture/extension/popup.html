@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="popup.css">
+  <title>JobCapture</title>
+</head>
+<body>
+  <div class="popup" id="popup">
+    <div class="header">
+      <div class="logo">JobCapture</div>
+      <div class="batch-badge" id="batchCount">0 in batch</div>
+    </div>
+
+    <div class="detected-card" id="detectedCard">
+      <div class="detected-label">Detected on this page</div>
+      <div class="company-name" id="detectedCompany">—</div>
+      <div class="job-title" id="detectedTitle">No job detected</div>
+      <div class="meta-row">
+        <div class="meta-item" id="detectedLocation">
+          <span class="meta-icon">&#9673;</span>
+          <span id="locationText">—</span>
+        </div>
+        <div class="meta-item" id="detectedTeam" style="display: none;">
+          <span class="meta-icon">&#9678;</span>
+          <span id="teamText"></span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-save" id="btnSave" disabled>+ Save to Batch</button>
+
+    <div class="batch-divider"></div>
+    <div class="batch-header">
+      <div class="batch-title">Current Batch</div>
+    </div>
+    <div class="batch-list" id="batchList">
+      <div class="empty-batch" id="emptyBatch">No jobs in batch yet</div>
+    </div>
+
+    <div class="bottom-actions">
+      <button class="btn-finish" id="btnFinish" disabled>Finish Batch</button>
+      <a class="link-dashboard" id="linkDashboard">Dashboard →</a>
+    </div>
+
+    <div class="expand-toggle" id="expandToggle">
+      <span class="expand-text" id="expandText">▼ Expand</span>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
