@@ -41,6 +41,7 @@ class LeverConnector(BaseConnector):
                 continue
 
             categories = posting.get("categories", {})
+            dept = categories.get("team") or categories.get("department") or ""
             results.append(RawPosting(
                 title=posting.get("text", ""),
                 company=company_name,
@@ -49,6 +50,7 @@ class LeverConnector(BaseConnector):
                 url=posting.get("hostedUrl", ""),
                 posted_date=posted.strftime("%Y-%m-%d"),
                 source="lever",
+                department=dept,
             ))
 
         return results

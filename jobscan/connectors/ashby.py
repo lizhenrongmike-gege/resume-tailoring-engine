@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class AshbyConnector(BaseConnector):
-    BASE_URL = "https://api.ashbyhq.com/posting-api/job-board/{slug}"
+    BASE_URL = "https://api.ashbyhq.com/posting-api/job-board/{slug}?includeCompensation=true"
 
     def fetch_company(self, slug: str, company_name: str, days_back: int = 7) -> list[RawPosting]:
         url = self.BASE_URL.format(slug=slug)
@@ -51,6 +51,7 @@ class AshbyConnector(BaseConnector):
                 url=job.get("jobUrl", ""),
                 posted_date=posted.strftime("%Y-%m-%d"),
                 source="ashby",
+                department=job.get("department", "") or "",
             ))
 
         return results

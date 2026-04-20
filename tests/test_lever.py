@@ -57,3 +57,29 @@ def test_fetch_handles_error(mock_get):
 
     conn = LeverConnector()
     assert conn.fetch_company("bad", "Bad", days_back=7) == []
+
+
+SAMPLE_LEVER_WITH_DEPT = [
+    {
+        "text": "KYC Analyst",
+        "categories": {
+            "location": "Remote",
+            "team": "Risk",
+            "department": "Operations",
+        },
+        "hostedUrl": "https://jobs.lever.co/plaid/xyz",
+        "descriptionPlain": "KYC work.",
+        "createdAt": int((datetime.now() - timedelta(days=1)).timestamp() * 1000),
+    }
+]
+
+@patch("jobscan.connectors.lever.requests.get")
+def test_department_extracted_lever(mock_get):
+    mock_resp = MagicMock()
+    mock_resp.status_code = 200
+    mock_resp.json.return_value = SAMPLE_LEVER_WITH_DEPT
+    mock_get.return_value = mock_resp
+    from jobscan.connectors.lever import LeverConnector
+    results = LeverConnector().fetch_company("plaid", "Plaid", days_back=7)
+    # Lever: prefer team, fall back to department
+    assert results[0].department == "Risk"

@@ -14,6 +14,7 @@ class RawPosting:
     url: str
     posted_date: str | None
     source: str
+    department: str = ""
 
 
 class BaseConnector:

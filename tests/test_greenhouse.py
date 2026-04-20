@@ -22,6 +22,7 @@ SAMPLE_GREENHOUSE_RESPONSE = {
             "absolute_url": "https://boards.greenhouse.io/stripe/jobs/123",
             "content": "<p>Investigate fraud patterns using SQL...</p>",
             "updated_at": (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%dT%H:%M:%S-05:00"),
+            "departments": [{"id": 1, "name": "Risk"}],
         },
         {
             "title": "Senior Software Engineer",
@@ -66,6 +67,17 @@ def test_fetch_handles_api_error(mock_get):
     conn = GreenhouseConnector()
     results = conn.fetch_company("nonexistent", "Nobody", days_back=7)
     assert results == []
+
+
+@patch("jobscan.connectors.greenhouse.requests.get")
+def test_department_extracted(mock_get):
+    mock_resp = MagicMock()
+    mock_resp.status_code = 200
+    mock_resp.json.return_value = SAMPLE_GREENHOUSE_RESPONSE
+    mock_get.return_value = mock_resp
+    conn = GreenhouseConnector()
+    results = conn.fetch_company("stripe", "Stripe", days_back=7)
+    assert results[0].department == "Risk"
 
 
 @patch("jobscan.connectors.greenhouse.requests.get")
