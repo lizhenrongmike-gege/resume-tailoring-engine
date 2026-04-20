@@ -105,3 +105,33 @@ def test_multiple_filters_reports_first_reason():
     ])
     assert len(result.passed) == 0
     assert len(result.failed) == 1
+
+
+def test_chief_and_officer_titles_filtered():
+    postings = [
+        _posting(title="Chief Audit Officer"),
+        _posting(title="Chief Risk Officer"),
+        _posting(title="Head of Compliance"),
+    ]
+    result = apply_hard_filters(postings)
+    assert len(result.passed) == 0
+    assert all("seniority" in r.lower() for r in result.reasons.values())
+
+
+def test_extended_excluded_titles_filtered():
+    postings = [
+        _posting(title="AV Engineer"),
+        _posting(title="IT Engineer"),
+        _posting(title="Data Center Engineer II"),
+        _posting(title="Design Engineer, Presence"),
+        _posting(title="Android Engineer, Terminal"),
+        _posting(title="iOS Engineer"),
+        _posting(title="Research Engineer – Training Infra"),
+        _posting(title="Account Executive, Funded Startups"),
+        _posting(title="Sales Development Representative"),
+        _posting(title="Customer Support Specialist"),
+        _posting(title="Accountant"),
+        _posting(title="Communications Manager"),
+    ]
+    result = apply_hard_filters(postings)
+    assert len(result.passed) == 0

@@ -111,7 +111,10 @@ PRIORITY_COMPANIES = [
     {"name": "Clay", "ats": "ashby", "slug": "clay"},
 ]
 
-SENIORITY_PATTERN = r"\b(?:Senior|Sr\.?|Staff|Principal|Lead|Manager|Director|VP|Head)\b"
+SENIORITY_PATTERN = (
+    r"\b(?:Senior|Sr\.?|Staff|Principal|Lead|Manager|Director|VP|"
+    r"Head\s+of|Chief\s+\w+\s+Officer|Chief)\b"
+)
 
 YOE_PATTERN = r"(?:[4-9]|[1-9]\d)\s*\\?\+?\s*(?:years?|yrs?)\b"
 
@@ -158,6 +161,26 @@ EXCLUDED_TITLES = [
     "Designer",
     "Copywriter",
     "Content Writer",
+    "AV Engineer",
+    "IT Engineer",
+    "Data Center Engineer",
+    "Design Engineer",
+    "Android Engineer",
+    "iOS Engineer",
+    "Mobile Engineer",
+    "Research Engineer",
+    "Account Executive",
+    "Sales Development Representative",
+    "SDR",
+    "Business Development Representative",
+    "BDR",
+    "Customer Support",
+    "Support Specialist",
+    "Accountant",
+    "Communications",
+    "Comms",
+    "Creative Technologist",
+    "Production Support Engineer",
 ]
 
 LOCATION_ALLOW_PATTERN = (
