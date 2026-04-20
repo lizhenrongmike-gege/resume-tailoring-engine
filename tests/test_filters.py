@@ -131,7 +131,8 @@ def test_extended_excluded_titles_filtered():
         _posting(title="Sales Development Representative"),
         _posting(title="Customer Support Specialist"),
         _posting(title="Accountant"),
-        _posting(title="Communications Manager"),
+        _posting(title="Production Support Engineer"),
     ]
     result = apply_hard_filters(postings)
     assert len(result.passed) == 0
+    assert all("excluded title" in r.lower() for r in result.reasons.values()), result.reasons

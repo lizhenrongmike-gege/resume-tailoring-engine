@@ -113,7 +113,7 @@ PRIORITY_COMPANIES = [
 
 SENIORITY_PATTERN = (
     r"\b(?:Senior|Sr\.?|Staff|Principal|Lead|Manager|Director|VP|"
-    r"Head\s+of|Chief\s+\w+\s+Officer|Chief)\b"
+    r"Head(?:\s+of)?|Chief)\b"
 )
 
 YOE_PATTERN = r"(?:[4-9]|[1-9]\d)\s*\\?\+?\s*(?:years?|yrs?)\b"
@@ -171,14 +171,10 @@ EXCLUDED_TITLES = [
     "Research Engineer",
     "Account Executive",
     "Sales Development Representative",
-    "SDR",
     "Business Development Representative",
-    "BDR",
     "Customer Support",
     "Support Specialist",
     "Accountant",
-    "Communications",
-    "Comms",
     "Creative Technologist",
     "Production Support Engineer",
 ]
